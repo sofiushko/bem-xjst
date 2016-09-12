@@ -83,5 +83,33 @@ describe('Modes .mod(modName, modVal)', function() {
       { block: 'b', mods: { m: null } },
       '<div class="b"></div>');
     });
+
+    it('should support mod with wildcard', function() {
+      test(function() {
+        block('b').mod('m', '*').tag()('span');
+      },
+      [
+        { block: 'b', mods: { m: true } },
+        { block: 'b', mods: { m: 'test' } },
+        { block: 'b', mods: { no: 'test' } }
+      ],
+      '<span class="b b_m"></span>' +
+      '<span class="b b_m_test"></span>' +
+      '<div class="b b_no_test"></div>');
+    });
+
+    it('string should support mod with one argument', function() {
+      test(function() {
+        block('b').mod('m').tag()('span');
+      },
+      [
+        { block: 'b', mods: { m: true } },
+        { block: 'b', mods: { m: 'test' } },
+        { block: 'b', mods: { no: 'test' } }
+      ],
+      '<span class="b b_m"></span>' +
+      '<span class="b b_m_test"></span>' +
+      '<div class="b b_no_test"></div>');
+    });
   });
 });

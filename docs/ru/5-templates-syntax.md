@@ -64,7 +64,7 @@ elem(name)
 ```js
 /**
  * @param {String} modName имя модификатора блока
- * @param {String|Boolean} modVal значение модификатора блока
+ * @param {String|Boolean|'*'} [modVal] значение модификатора блока
  */
 mod(modName, modVal)
 ```
@@ -117,12 +117,36 @@ block('item')
 <small class="item item_size_1"></small>
 ```
 
+Если второй аргумет `mod()` отсутствует либо равен '*' тогда будут к узлу будут
+применены шаблоны для соответствующего модификатора с любым значением.
+
+```js
+block('a').mod('size').tag()('span');
+block('a').mod('size', '*').mix()('sized');
+```
+Оба шаблона будут применены к узлам BEMJSON-а, у которых блок равен 'a' и
+присутствует модификатор 'size' (со значением отличным от `undefined`).
+
+```js
+{ block: 'a', mods: { size: 's' } },
+{ block: 'a', mods: { size: 10 } },
+{ block: 'a', mods: { size: '', theme: 'dark' } }
+```
+
+Но шаблоны не будут применены к узлам:
+```js
+{ block: 'a', mods: { theme: 'dark' } },
+{ block: 'a', mods: { size: undefined } },
+{ block: 'a', mods: {} }
+```
+
+
 ### elemMod
 
 ```js
 /**
  * @param {String} elemModName имя модификатора элемента
- * @param {String|Boolean} elemModVal значение модификатора элемента
+ * @param {String|Boolean|'*'} [elemModVal] значение модификатора элемента
  */
 elemMod(elemModName, elemModVal)
 ```
@@ -151,6 +175,10 @@ block('page').elem('content').elemMod('type', 'index').mix()({ block: 'mixed' })
 ```
 
 `elemModVal` проверяются на соответствие после приведения к строке. Это поведение аналогично поведению проверки `modVal`.
+
+Второй аргумент `elemMods()` так же может отстуствовать или быть равен '*', в
+этом случае поведение аналогичное режиму `mods()` — шаблоны будут примерены к
+узлам с модификатором любого значения.
 
 ### match
 
